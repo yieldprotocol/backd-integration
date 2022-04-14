@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@yield-protocol/utils-v2": "^2.5.2",
+    "@yield-protocol/vault-interfaces": "^2.3.4"
+  }
+}

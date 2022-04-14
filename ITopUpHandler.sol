@@ -17,10 +17,10 @@ interface ITopUpHandler {
      * @return true if the top up succeeded and false otherwise
      */
     function topUp(
-        address account,
+        bytes32 account,
         address underlying,
         uint256 amount,
-        bool repayDebt
+        bytes memory extra
     ) external returns (bool);
 
     /**
@@ -29,5 +29,5 @@ interface ITopUpHandler {
      * This should be an aggregate value including all the collateral of the user
      * @param account account for which to get the factor
      */
-    function getUserFactor(address account) external view returns (uint256);
+    function getUserFactor(bytes32 account) external view returns (uint256);
 }

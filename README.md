@@ -1,4 +1,4 @@
-# Yield Protocol Vault v2
+# Yield Top-up Handler
 This is a handler for [Backd](https://backd.fund) Top-up [Actions](https://docs.backd.fund/protocol-architecture/actions).
 
 Backd allows users to register on-chain actions to increase the efficiency of their assets. [Collateral Top-ups](https://docs.backd.fund/protocol-architecture/actions/top-ups) are one such action. These inject additional collateral into a debt position to increase the health factor of the position and in turn decrease the risk of liquidation.
