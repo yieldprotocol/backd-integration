@@ -42,7 +42,7 @@ contract YieldHandler is ITopUpHandler {
     ) external returns (bool) {
         vault = cauldron.vaults(bytes12(account));
         bytes6 baseId = cauldron.series(vault.seriesId).baseId;
-        require(underlying == cauldron.assets(baseId), "Underlying not found!");
+        require(underlying == cauldron.assets(vault.ilkId), "Mismatched vault and underlying");
         join = ladle.joins(vault.ilkId);
         IERC20(underlying).transfer(address(join), amount);
         ladle.pour(bytes12(account), address(0), amount.i128(), 0);
