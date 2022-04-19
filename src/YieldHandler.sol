@@ -36,12 +36,11 @@ contract YieldHandler is ITopUpHandler {
 
     function topUp(
         bytes32 account,        // This will be the vaultId, packed as a bytes32
-        address underlying,      // Backd calls this underlying, but should be called just `asset` to avoid confusion.
+        address underlying,     // Backd calls this underlying, but should be called just `asset` to avoid confusion.
         uint256 amount,
         bytes memory extra
     ) external returns (bool) {
         vault = cauldron.vaults(bytes12(account));
-        bytes6 baseId = cauldron.series(vault.seriesId).baseId;
         require(underlying == cauldron.assets(vault.ilkId), "Mismatched vault and underlying");
         join = ladle.joins(vault.ilkId);
         IERC20(underlying).transfer(address(join), amount);
