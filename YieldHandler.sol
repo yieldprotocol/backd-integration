@@ -35,7 +35,7 @@ contract YieldHandler is ITopUpHandler {
      */
 
     function topUp(
-        bytes32 account,
+        bytes32 account,        // This will be the vaultId, packed as a bytes32
         address underlying,      // Backd calls this underlying, but should be called just `asset` to avoid confusion.
         uint256 amount,
         bytes memory extra
