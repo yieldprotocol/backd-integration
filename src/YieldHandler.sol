@@ -8,6 +8,9 @@ import "@yield-protocol/vault-interfaces/ILadle.sol";
 import "@yield-protocol/utils-v2/contracts/cast/CastU256I128.sol";
 import "@yield-protocol/utils-v2/contracts/token/IERC20.sol";
 
+interface ICauldronCustom {
+    function level(bytes12 vaultId) external view returns (int256);
+}
 
 contract YieldHandler is ITopUpHandler {
     using CastU256I128 for uint256;
@@ -52,10 +55,11 @@ contract YieldHandler is ITopUpHandler {
      * @notice Returns a factor for the user which should always be >= 1 for sufficiently
      *         collateralized positions and should get closer to 1 when collaterization level decreases
      * This should be an aggregate value including all the collateral of the user
-     * @param account account for which to get the factor
+     * @dev This transaction will revert if the position has a collateral that uses transactional oracles
+     * @param account account for which to get the factor (in our case it is the vaultId, packed as a bytes32)
      */
-    function getUserFactor(bytes32 account) external view returns (uint256) {
-        return uint256(cauldron.level(bytes12(account))) + 1;
+    function getUserFactor(bytes32 account, bytes memory extra) external view returns (uint256) {
+        return uint256(ICauldronCustom(address(cauldron)).level(bytes12(account))) + 1;
     }
 
 }

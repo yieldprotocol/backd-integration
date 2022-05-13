@@ -29,5 +29,5 @@ interface ITopUpHandler {
      * This should be an aggregate value including all the collateral of the user
      * @param account account for which to get the factor
      */
-    function getUserFactor(bytes32 account) external view returns (uint256);
+    function getUserFactor(bytes32 account, bytes memory extra) external view returns (uint256);
 }
