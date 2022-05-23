@@ -2,11 +2,11 @@
 pragma solidity 0.8.9;
 
 import "./ITopUpHandler.sol";
-import "@yield-protocol/vault-interfaces/DataTypes.sol";
-import "@yield-protocol/vault-interfaces/ICauldron.sol";
-import "@yield-protocol/vault-interfaces/ILadle.sol";
-import "@yield-protocol/utils-v2/contracts/cast/CastU256I128.sol";
-import "@yield-protocol/utils-v2/contracts/token/IERC20.sol";
+import "vault-interfaces/DataTypes.sol";
+import "vault-interfaces/ICauldron.sol";
+import "vault-interfaces/ILadle.sol";
+import "yield-utils-v2/contracts/cast/CastU256I128.sol";
+import "yield-utils-v2/contracts/token/IERC20.sol";
 
 interface ICauldronCustom {
     function level(bytes12 vaultId) external view returns (int256);
