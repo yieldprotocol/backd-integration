@@ -21,9 +21,9 @@ contract YieldHandler is ITopUpHandler {
     IJoin join;
     IERC20 collateral;
 
-    constructor(ICauldron cauldronAddress, ILadle ladleAddress) {
-        cauldron = cauldronAddress;
-        ladle = ladleAddress;
+    constructor(ICauldron cauldron_, ILadle ladle_) {
+        cauldron = cauldron_;
+        ladle = ladle_;
     }
 
     /**
