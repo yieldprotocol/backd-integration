@@ -19,7 +19,6 @@ contract YieldHandler is ITopUpHandler {
     ICauldron cauldron;
     ILadle ladle;
     IJoin join;
-    IERC20 collateral;
 
     constructor(ICauldron cauldron_, ILadle ladle_) {
         cauldron = cauldron_;
