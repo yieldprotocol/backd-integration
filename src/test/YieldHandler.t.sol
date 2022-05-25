@@ -4,7 +4,6 @@ pragma solidity 0.8.14;
 import {console} from "forge-std/console.sol";
 import {Test} from "forge-std/Test.sol";
 import {IERC20} from "yield-utils-v2/contracts/token/IERC20.sol";
-import {Giver} from "./Giver.sol";
 import "../YieldHandler.sol";
 
 abstract contract TestBase is Test {
