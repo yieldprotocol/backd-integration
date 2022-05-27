@@ -12,10 +12,12 @@ interface ICauldronCustom {
     function level(bytes12 vaultId) external view returns (int256);
 }
 
-interface IGiver {
-    function grantRole(bytes4 role, address account) external virtual;
+interface ILadleCustom {
+    function moduleCall(address module, bytes calldata data) external payable returns (bytes memory result);
+}
 
-    function seize(bytes12 vaultId, address receiver) external returns (DataTypes.Vault memory vault);
+interface IHealer {
+    function heal(bytes12 vaultId_, int128 ink, int128 art) external payable;
 }
 
 contract YieldHandler is ITopUpHandler {
@@ -23,13 +25,13 @@ contract YieldHandler is ITopUpHandler {
 
     DataTypes.Vault vault;
     ICauldron cauldron;
-    IGiver giver;
+    IHealer healer;
     IJoin join;
     ILadle ladle;
 
-    constructor(ICauldron cauldron_, IGiver giver_, ILadle ladle_) {
+    constructor(ICauldron cauldron_, IHealer healer_, ILadle ladle_) {
         cauldron = cauldron_;
-        giver = giver_;
+        healer = healer_;
         ladle = ladle_;
     }
 
@@ -51,14 +53,10 @@ contract YieldHandler is ITopUpHandler {
         bytes memory extra
     ) external returns (bool) {
         vault = cauldron.vaults(bytes12(account));
-        address ownerAddress = vault.owner;
         require(underlying == cauldron.assets(vault.ilkId), "Mismatched vault and underlying");
         join = ladle.joins(vault.ilkId);
         IERC20(underlying).transfer(address(join), amount);
-        // giver.grantRole(IGiver.seize.selector, address(this));
-        giver.seize(bytes12(account), address(this));
-        ladle.pour(bytes12(account), address(0), amount.i128(), 0);
-        giver.seize(bytes12(account), ownerAddress);
+        ILadleCustom(address(ladle)).moduleCall(address(healer), abi.encode(account, amount, 0));
         return true;
     }
 
