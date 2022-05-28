@@ -2,6 +2,7 @@
 pragma solidity 0.8.14;
 
 import "./ITopUpHandler.sol";
+import "./test/utils/HealerModule.sol";
 import "vault-interfaces/src/DataTypes.sol";
 import "vault-interfaces/src/ICauldron.sol";
 import "vault-interfaces/src/ILadle.sol";
@@ -25,11 +26,11 @@ contract YieldHandler is ITopUpHandler {
 
     DataTypes.Vault vault;
     ICauldron cauldron;
-    IHealer healer;
+    HealerModule healer;
     IJoin join;
     ILadle ladle;
 
-    constructor(ICauldron cauldron_, IHealer healer_, ILadle ladle_) {
+    constructor(ICauldron cauldron_, HealerModule healer_, ILadle ladle_) {
         cauldron = cauldron_;
         healer = healer_;
         ladle = ladle_;
@@ -56,7 +57,10 @@ contract YieldHandler is ITopUpHandler {
         require(underlying == cauldron.assets(vault.ilkId), "Mismatched vault and underlying");
         join = ladle.joins(vault.ilkId);
         IERC20(underlying).transfer(address(join), amount);
-        ILadleCustom(address(ladle)).moduleCall(address(healer), abi.encode(account, amount, 0));
+        ILadleCustom(address(ladle)).moduleCall(
+            address(healer), 
+            abi.encodeWithSelector(bytes4(healer.heal.selector), account, amount, 0)
+        );
         return true;
     }
 

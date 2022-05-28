@@ -2,15 +2,21 @@
 pragma solidity 0.8.14;
 
 import {console} from "forge-std/console.sol";
-import {Test} from "forge-std/Test.sol";
+import {Test} from "./utils/Test.sol";
+import {HealerModule} from "./utils/HealerModule.sol";
+import {Mocks} from "./utils/Mocks.sol";
 import {IERC20} from "yield-utils-v2/contracts/token/IERC20.sol";
+import {IWETH9} from "yield-utils-v2/contracts/interfaces/IWETH9.sol";
 import "../YieldHandler.sol";
 
 abstract contract TestBase is Test {
+    using Mocks for *;
+
     YieldHandler public yieldHandler;
     ICauldron public cauldron = ICauldron(0xc88191F8cb8e6D4a668B047c1C8503432c3Ca867);
     ILadle public ladle = ILadle(0x6cB18fF2A33e981D1e38A663Ca056c0a5265066A);
-    IGiver public giver = IGiver(0xc88191F8cb8e6D4a668B047c1C8503432c3Ca867);
+    HealerModule public healer;
+    IWETH9 public weth;
 
     address dai = 0x6B175474E89094C44Da98b954EedeAC495271d0F; // DAI token address
     bytes6 ilkId = 0x303100000000; // DAI
@@ -18,7 +24,9 @@ abstract contract TestBase is Test {
     bytes12 vaultId;
 
     function setUp() public {
-        yieldHandler = new YieldHandler(cauldron, giver, ladle);
+        weth = IWETH9(Mocks.mock("WETH9"));
+        healer = new HealerModule(cauldron, weth);
+        yieldHandler = new YieldHandler(cauldron, healer, ladle);
         (vaultId, ) = ladle.build(seriesId, ilkId, 0);
     }
 

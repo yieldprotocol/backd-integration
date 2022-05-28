@@ -1,3 +1,5 @@
 forge-std=lib/forge-std/src/
 yield-utils-v2/=lib/yield-utils-v2/
 vault-interfaces/=lib/vault-interfaces/
+yieldspace-interfaces/=lib/yieldspace-interfaces/
+vault-v2/=lib/vault-v2/contracts/
