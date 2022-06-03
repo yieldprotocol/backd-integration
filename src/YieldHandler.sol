@@ -2,7 +2,6 @@
 pragma solidity 0.8.14;
 
 import "./ITopUpHandler.sol";
-import "./test/utils/HealerModule.sol";
 import "vault-interfaces/src/DataTypes.sol";
 import "vault-interfaces/src/ICauldron.sol";
 import "vault-interfaces/src/ILadle.sol";
@@ -14,10 +13,12 @@ interface ICauldronCustom {
 }
 
 interface ILadleCustom {
+    function addModule(address module, bool set) external;
+
     function moduleCall(address module, bytes calldata data) external payable returns (bytes memory result);
 }
 
-interface IHealer {
+interface IHealerModule {
     function heal(bytes12 vaultId_, int128 ink, int128 art) external payable;
 }
 
@@ -26,11 +27,11 @@ contract YieldHandler is ITopUpHandler {
 
     DataTypes.Vault vault;
     ICauldron cauldron;
-    HealerModule healer;
+    IHealerModule healer;
     IJoin join;
     ILadle ladle;
 
-    constructor(ICauldron cauldron_, HealerModule healer_, ILadle ladle_) {
+    constructor(ICauldron cauldron_, IHealerModule healer_, ILadle ladle_) {
         cauldron = cauldron_;
         healer = healer_;
         ladle = ladle_;

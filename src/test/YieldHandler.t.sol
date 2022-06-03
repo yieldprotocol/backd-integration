@@ -2,31 +2,28 @@
 pragma solidity 0.8.14;
 
 import {console} from "forge-std/console.sol";
-import {Test} from "./utils/Test.sol";
-import {HealerModule} from "./utils/HealerModule.sol";
-import {Mocks} from "./utils/Mocks.sol";
+import {Test} from "forge-std/Test.sol";
 import {IERC20} from "yield-utils-v2/contracts/token/IERC20.sol";
 import {IWETH9} from "yield-utils-v2/contracts/interfaces/IWETH9.sol";
 import "../YieldHandler.sol";
 
 abstract contract TestBase is Test {
-    using Mocks for *;
-
+    // Addresses for Cauldron, Ladle, HealerModule, and DAI are from the Goerli testnet
     YieldHandler public yieldHandler;
-    ICauldron public cauldron = ICauldron(0xc88191F8cb8e6D4a668B047c1C8503432c3Ca867);
-    ILadle public ladle = ILadle(0x6cB18fF2A33e981D1e38A663Ca056c0a5265066A);
-    HealerModule public healer;
+    ICauldron public cauldron = ICauldron(0xF39bf75997176915a117Bb274eF6F20784B91568);
+    ILadle public ladle = ILadle(0xE34989E754e6fF29A0bcbe0A9b0ea818C93bff05);
+    IHealerModule public healer = IHealerModule(0x9edb7D64aFD7B7A7d45369614d21cC2Abdc94aF8);
     IWETH9 public weth;
 
-    address dai = 0x6B175474E89094C44Da98b954EedeAC495271d0F; // DAI token address
+    address dai = 0x049E2f3fD58735c116Ba02cd3eC2E76BC01D40D1; // DAI token address
     bytes6 ilkId = 0x303100000000; // DAI
     bytes6 seriesId = 0x303130370000; // ETH/DAI Sept 22 series
     bytes12 vaultId;
 
     function setUp() public {
-        weth = IWETH9(Mocks.mock("WETH9"));
-        healer = new HealerModule(cauldron, weth);
         yieldHandler = new YieldHandler(cauldron, healer, ladle);
+        vm.prank(0x58A098e581Fc56760552415A372398750d0a7C14); // Timelock address on Goerli
+        ILadleCustom(address(ladle)).addModule(address(healer), true);
         (vaultId, ) = ladle.build(seriesId, ilkId, 0);
     }
 
@@ -43,9 +40,7 @@ contract YieldHandlerTest is TestBase {
     function testTopUp() public {
         console.log("Tops up the vault with the amount of asset");
         bytes memory filler = "sabnock";
-        deal(dai, address(yieldHandler), 1000);
-        assertEq(IERC20(dai).balanceOf(address(yieldHandler)), 1000);
-        console.logBytes12(vaultId);
+        deal(dai, address(yieldHandler), 100);
         yieldHandler.topUp(bytes32(vaultId), dai, 1, filler);
     }
 
