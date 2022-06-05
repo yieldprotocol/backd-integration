@@ -40,13 +40,20 @@ contract YieldHandlerTest is TestBase {
     function testTopUp() public {
         console.log("Tops up the vault with the amount of asset");
         bytes memory filler = "sabnock";
-        deal(dai, address(yieldHandler), 100);
+        deal(dai, address(yieldHandler), 1);
+        uint128 balance = cauldron.balances(vaultId).ink;
         yieldHandler.topUp(bytes32(vaultId), dai, 1, filler);
+        assertEq(balance + 1, cauldron.balances(vaultId).ink, "TopUp failed");
     }
 
     function testGetUserFactor() public {
         console.log("Retrieves the health factor for the given vault id");
         bytes memory filler = "sabnock";
-        yieldHandler.getUserFactor(vaultId, filler);
+        uint256 userFactor = yieldHandler.getUserFactor(vaultId, filler);
+        assertEq(ICauldronCustom(address(cauldron)).level(bytes12(vaultId)) + 1, int256(userFactor), "Incorrect user factor");
+
+        deal(dai, address(yieldHandler), 1);
+        yieldHandler.topUp(bytes32(vaultId), dai, 1, filler);
+        assertEq(ICauldronCustom(address(cauldron)).level(bytes12(vaultId)) + 1, int256(userFactor + 1), "Incorrect user factor");
     }
 }
