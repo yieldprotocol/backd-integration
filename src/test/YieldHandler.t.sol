@@ -21,7 +21,7 @@ abstract contract TestBase is Test {
     bytes12 vaultId;
 
     function setUp() public {
-        yieldHandler = new YieldHandler(cauldron, healer, ladle);
+        yieldHandler = new YieldHandler(cauldron, ladle, healer);
         vm.prank(0x58A098e581Fc56760552415A372398750d0a7C14); // Timelock address on Goerli
         ILadleCustom(address(ladle)).addModule(address(healer), true);
         (vaultId, ) = ladle.build(seriesId, ilkId, 0);

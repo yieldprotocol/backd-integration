@@ -5,7 +5,7 @@ import "./ITopUpHandler.sol";
 import "vault-interfaces/src/DataTypes.sol";
 import "vault-interfaces/src/ICauldron.sol";
 import "vault-interfaces/src/ILadle.sol";
-import "yield-utils-v2/contracts/cast/CastU256I128.sol";
+import "yield-utils-v2/contracts/cast/CastBytes32Bytes12.sol";
 import "yield-utils-v2/contracts/token/IERC20.sol";
 
 interface ICauldronCustom {
@@ -23,18 +23,18 @@ interface IHealerModule {
 }
 
 contract YieldHandler is ITopUpHandler {
-    using CastU256I128 for uint256;
+    using CastBytes32Bytes12 for bytes32;
 
-    DataTypes.Vault vault;
     ICauldron cauldron;
-    IHealerModule healer;
-    IJoin join;
     ILadle ladle;
+    IJoin join;
+    IHealerModule healer;
+    DataTypes.Vault vault;
 
-    constructor(ICauldron cauldron_, IHealerModule healer_, ILadle ladle_) {
+    constructor(ICauldron cauldron_, ILadle ladle_, IHealerModule healer_) {
         cauldron = cauldron_;
-        healer = healer_;
         ladle = ladle_;
+        healer = healer_;
     }
 
     /**
@@ -54,7 +54,7 @@ contract YieldHandler is ITopUpHandler {
         uint256 amount,
         bytes memory extra
     ) external returns (bool) {
-        vault = cauldron.vaults(bytes12(account));
+        vault = cauldron.vaults(account.b12());
         require(underlying == cauldron.assets(vault.ilkId), "Mismatched vault and underlying");
         join = ladle.joins(vault.ilkId);
         IERC20(underlying).transfer(address(join), amount);
