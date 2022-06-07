@@ -1,0 +1,11 @@
+[default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+remappings = [
+    "@std=lib/forge-std/src/",
+    "@yield-protocol/utils-v2/=lib/yield-utils-v2/",
+    "@yield-protocol/vault-interfaces/=lib/vault-interfaces/",
+]
+
+# See more config options https://github.com/gakonst/foundry/tree/master/config
